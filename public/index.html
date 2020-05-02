@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Webassembly demo</title>
+</head>
+
+<body>
+  <h1>Webassembly demo</h1>
+  <script src="prime.js"></script>
+  <script>
+    const primes = 500000;
+
+    const isPrime = num => {
+      for (let i = 2; i < num; i++) {
+        if (num % i === 0) return false;
+      }
+      return num !== 1 && num !== 0;
+    }
+
+    const checkPrimes = num => {
+      let count = 0;
+      for (let i = 0; i < num; i++) {
+        if (isPrime(i)) count++;
+      }
+      return count;
+    }
+
+    Module['onRuntimeInitialized'] = () => {
+      let jsStart = performance.now();
+      let jsPrime = checkPrimes(primes);
+      console.log("JS", jsPrime, Math.round(performance.now() - jsStart) / 1000);
+
+      let cStart = performance.now();
+      let cPrime = _checkPrimes(primes);
+      console.log("C", cPrime, Math.round(performance.now() - cStart) / 1000);
+
+    }
+  </script>
+</body>
+
+</html>
